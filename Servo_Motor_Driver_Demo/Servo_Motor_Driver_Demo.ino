@@ -1,7 +1,7 @@
 #include "IDC_ServoMotorDriver.h"
 
-IDC_ServoMotorDriver lMotor(13, false);
-IDC_ServoMotorDriver rMotor(12, true);
+IDC_ServoMotorDriver rMotor(13, true);
+IDC_ServoMotorDriver lMotor(12, false);
 void setup() {
 lMotor.initialise();
 rMotor.initialise();
