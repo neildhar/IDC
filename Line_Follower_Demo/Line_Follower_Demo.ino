@@ -1,7 +1,8 @@
 #define lPin 7
 #define cPin 5
 #define rPin 4
-#define QTIThreshold 300
+
+#define QTIThreshold 200
 
 #include "IDC_ServoMotorDriver.h"
 
@@ -22,14 +23,14 @@ long lQTI, rQTI, cQTI;
 void loop() {
   lQTI = RCtime(lPin);
   rQTI = RCtime(rPin);
-  cQTI = RCtime(cPin);
+  //cQTI = RCtime(cPin);
 
-  Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
+  //Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
 
   if(lQTI<QTIThreshold && rQTI<QTIThreshold){
     onHash = false;
-    lMotor.run(150);
-    rMotor.run(150);
+    lMotor.run(100);
+    rMotor.run(100);
   }
   else if(lQTI>QTIThreshold && rQTI<QTIThreshold){
     onHash = false;
