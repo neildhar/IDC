@@ -1,4 +1,4 @@
-#define lPin 7
+#define lPin 10
 #define cPin 5
 #define rPin 4
 
