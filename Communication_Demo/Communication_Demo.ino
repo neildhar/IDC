@@ -7,7 +7,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(gLEDPin, OUTPUT); /*set send LED pin mode*/
   pinMode(rLEDPin, OUTPUT);   /*set receive LED pin mode*/
-  pinMode(6, INPUT); /* set button pin mode*/
+  pinMode(buttonPin, INPUT); /* set button pin mode*/
 }
 
 long lastXBeeRec=0; /*time of last received XBee byte*/
