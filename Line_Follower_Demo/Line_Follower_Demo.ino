@@ -13,9 +13,6 @@ void setup() {
   Serial.begin(9600);
   lMotor.initialise();
   rMotor.initialise();
-  lMotor.run(-150);
-  rMotor.run(150);
-  delay(5000);
 }
 bool onHash = false;
 long lQTI, rQTI, cQTI;
@@ -63,7 +60,7 @@ long RCtime(int sensPin){
    
    pinMode(sensPin, OUTPUT);       // make pin OUTPUT
    digitalWrite(sensPin, HIGH);    // make pin HIGH to discharge capacitor - study the schematic
-   delay(2);                       // wait a  ms to make sure cap is discharged
+   delay(2);                       // wait 2 ms to make sure cap is discharged
    
    pinMode(sensPin, INPUT);        // turn pin into an input and time till pin goes low
    long startTime = micros();
