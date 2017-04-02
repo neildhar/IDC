@@ -35,7 +35,7 @@ void IDC_ScoreKeeper::update(){
 		byte incoming = XBee -> read();
 		byte state = incoming & 0b00011111;
 		bool valid = true;
-		int id = incoming>>5;
+		byte id = incoming>>5;
 		if(id<5){
 			stateBuffer[id][stateBufferIndex[id]] = state;
 			stateBufferIndex[id] = (stateBufferIndex[id]+1)%BUFFER_SIZE;
