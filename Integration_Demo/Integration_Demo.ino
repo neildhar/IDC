@@ -75,6 +75,9 @@ void loop() {
      else if(hashCount == 6){
         lMotor.run(0);
         rMotor.run(0);
+        delay(200); //wait for robot to completely stop
+        lMotor.disconnect();
+        rMotor.disconnect();
         continue;
      }
       //LINE FOLLOWING
@@ -115,7 +118,7 @@ void loop() {
             lMotor.run(0);
             rMotor.run(0);
             delay(200); //wait for robot to completely stop
-            lMotor.disconnect();
+            lMotor.disconnect(); //cut power to motors to save power and reduce jitter
             rMotor.disconnect();
     
             hasObject = false; //assume there is no object there
@@ -137,13 +140,11 @@ void loop() {
                 }
             }
             /*SENSING CODE ENDS HERE*/
-    
-            digitalWrite(gLEDPin, hasObject); //light up the green LED if object is there
-            
-            delay (1000);
-    
-            digitalWrite(gLEDPin, false);
-            
+            if(hasObject){
+                digitalWrite(gLEDPin, hasObject); //light up the green LED if object is there
+                delay (1000);
+                digitalWrite(gLEDPin, false);
+            }
             lMotor.initialise();
             rMotor.initialise();
 
@@ -160,10 +161,6 @@ void loop() {
         }
       }
   
-  }
-  while(true){
-    lMotor.run(0);
-    rMotor.run(0);
   }
 }
 
