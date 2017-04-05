@@ -1,9 +1,9 @@
 #include "IDC_ScoreKeeper.h"
 
-IDC_ScoreKeeper test(&Serial3, 1);
+IDC_ScoreKeeper test(&Serial1, 1);
 
 void setup() {
-  Serial3.begin(9600);
+  Serial1.begin(9600);
   Serial.begin(9600);
 
 }
@@ -11,7 +11,7 @@ void setup() {
 void loop() {
   test.set(0, true);
   test.set(2, true);
-  test.setState(0, 0b00001);
+  test.set(3, true);
   
   
   Serial.println(test.getState(0), BIN);

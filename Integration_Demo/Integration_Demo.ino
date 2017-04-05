@@ -78,7 +78,7 @@ void loop() {
         delay(200); //wait for robot to completely stop
         lMotor.disconnect();
         rMotor.disconnect();
-        continue;
+        continue; //skip line following
      }
       //LINE FOLLOWING
       //Read QTIs

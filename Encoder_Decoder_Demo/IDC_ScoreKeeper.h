@@ -11,7 +11,6 @@
   class IDC_ScoreKeeper{
     private:
       const int BUFFER_SIZE = 5;
-      int myCurByte = 0;
       Stream* XBee;
       int myID;
       byte states[5];

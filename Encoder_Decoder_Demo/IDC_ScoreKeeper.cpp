@@ -7,18 +7,14 @@
 
 IDC_ScoreKeeper::IDC_ScoreKeeper(Stream* _XBee,int _id){
 	myID = _id;
-	myCurByte = _id<<5;
 	XBee = _XBee;
 }
 
 void IDC_ScoreKeeper::set(int pos, bool val){
     if(val)
-			myCurByte |= (1<<pos);
+			states[myID] |= (1<<pos);
 		else
-			myCurByte &= ~(1<<pos);
-
-		byte state = myCurByte & 0b00011111;
-		states[myID] = state;
+			states[myID] &= ~(1<<pos);
 }
 
 byte IDC_ScoreKeeper::getState(int byteID){
@@ -27,7 +23,7 @@ byte IDC_ScoreKeeper::getState(int byteID){
 
 
 void IDC_ScoreKeeper::sendByte(){
-	XBee ->write(myCurByte);
+	XBee ->write((myID<<5)|states[myID]);
 }
 
 void IDC_ScoreKeeper::update(){
