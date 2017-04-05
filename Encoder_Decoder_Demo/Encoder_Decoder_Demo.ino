@@ -14,8 +14,8 @@ void loop() {
   test.set(3, true);
   
   
-  //Serial.println(test.getState(0), BIN);
-  //Serial.println(test.getState(1), BIN);
+  Serial.println(test.getState(0), BIN);
+  Serial.println(test.getState(1), BIN);
   Serial.println(test.getScore());
   test.update();
 

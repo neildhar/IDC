@@ -32,6 +32,7 @@ void IDC_ScoreKeeper::update(){
 		byte state = incoming & 0b00011111;
 		bool valid = true;
 		byte id = incoming>>5;
+		
 		if(id<5){
 			stateBuffer[id][stateBufferIndex[id]] = state;
 			stateBufferIndex[id] = (stateBufferIndex[id]+1)%BUFFER_SIZE;

@@ -12,6 +12,7 @@
 
 #define XBeeSerial Serial1
 #define RFIDSerial Serial2
+#define LCDSerial Serial3
 
 #define QTIThreshold 200
 
@@ -34,17 +35,18 @@ void setup() {
   //initialise motors
   lMotor.initialise();
   rMotor.initialise();
-
+  
   pinMode(RFIDEnablePin, OUTPUT);
   digitalWrite(RFIDEnablePin, HIGH);
   RFIDSerial.begin(2400); //initialise RFID reader serial
+  LCDSerial.begin(2400);
 }
 
 bool onHash = false;
 bool hasObject = false;
 int hashCount = 0;
 long lastXBeeRec=0; /*time of last received XBee byte*/
-
+char strbuf[3];
 long lQTI, rQTI, cQTI;
 
 void loop() {
@@ -52,25 +54,8 @@ void loop() {
   while(true){
       //COMMUNICATION
       ScoreKeeper.update();
-      if(XBeeSerial.available()){ /*if XBee data is available and button is not pressed, start reading from serial buffer*/
-        Serial.println((char)XBeeSerial.read()); /*print received byte*/
-        digitalWrite(rLEDPin, HIGH); /*turn on receive LED*/
-        lastXBeeRec = millis(); /* update time of last received byte*/
-      }
       
-      if(!XBeeSerial.available()&&millis()-lastXBeeRec>50) 
-        digitalWrite(rLEDPin, LOW); /*ensure LED is on for at least 50ms to ensure it visibly turns on and to give time for the next byte*/
-      
-      if(digitalRead(buttonPin)){ /*if button is pressed, start sending*/
-        digitalWrite(gLEDPin, HIGH); /*turn on send LED*/
-        XBeeSerial.print('M'); /*send a byte*/
-        continue;
-      }
-     
-     if(!digitalRead(buttonPin))
-        digitalWrite(gLEDPin,LOW); /*if the button is not pressed, turn off the send LED*/
-     
-     if(hashCount==5){ //if five hashes
+     if(hashCount==5){ //if five hashes, back up
         lMotor.run(-150);
         rMotor.run(-150);
         delay(1000);
@@ -82,6 +67,13 @@ void loop() {
         delay(200); //wait for robot to completely stop
         lMotor.disconnect();
         rMotor.disconnect();
+        
+        LCDSerial.write(16); //turn on LCD
+        LCDSerial.write(12); //clear lcd
+        delay(5);
+        LCDSerial.write(17); //enable backlight
+      
+        LCDSerial.print(itoa(ScoreKeeper.getScore(), strbuf, 10)); //print score
         continue; //skip line following
      }
       //LINE FOLLOWING
@@ -138,13 +130,13 @@ void loop() {
              }
             digitalWrite(RFIDEnablePin, HIGH); //disable RFID reader
             while(RFIDSerial.available()){
-                Serial.println("something");
                 if(RFIDSerial.read() == RFID_START){ //if there is valid incoming data, object has been detected
                     hasObject = true;
                 }
             }
             /*SENSING CODE ENDS HERE*/
             ScoreKeeper.set(hashCount-1, hasObject);
+            
             if(hasObject){
                 digitalWrite(gLEDPin, hasObject); //light up the green LED if object is there
                 delay (1000);
