@@ -114,6 +114,9 @@ void loop() {
             hashCount++;
             lMotor.run(0);
             rMotor.run(0);
+            delay(200); //wait for robot to completely stop
+            lMotor.disconnect();
+            rMotor.disconnect();
     
             hasObject = false; //assume there is no object there
             
@@ -141,6 +144,9 @@ void loop() {
     
             digitalWrite(gLEDPin, false);
             
+            lMotor.initialise();
+            rMotor.initialise();
+
             lMotor.run(150); //compensate for jitter
             rMotor.run(150);
             delay(200);
