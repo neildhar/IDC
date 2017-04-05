@@ -45,92 +45,104 @@ long lastXBeeRec=0; /*time of last received XBee byte*/
 long lQTI, rQTI, cQTI;
 
 void loop() {
-  //COMMUNICATION
-  if(XBeeSerial.available() && !digitalRead(buttonPin)){ /*if XBee data is available and button is not pressed, start reading from serial buffer*/
-    Serial.println((char)XBeeSerial.read()); /*print received byte*/
-    digitalWrite(rLEDPin, HIGH); /*turn on receive LED*/
-    lastXBeeRec = millis(); /* update time of last received byte*/
-  }
-  else if(digitalRead(buttonPin)){ /*if button is pressed, start sending*/
-    digitalWrite(gLEDPin, HIGH); /*turn on send LED*/
-    XBeeSerial.print('M'); /*send a byte*/
-  }
- if(!digitalRead(buttonPin)) digitalWrite(gLEDPin,LOW); /*if the button is not pressed, turn off the send LED*/
- if(!XBeeSerial.available()&&millis()-lastXBeeRec>50) digitalWrite(rLEDPin, LOW); /*ensure LED is on for at least 50ms to ensure it visibly turns on and to give time for the next byte*/
-
-  //LINE FOLLOWING
-  //Read QTIs
-  lQTI = RCtime(lPin);
-  rQTI = RCtime(rPin);
-  //cQTI = RCtime(cPin);
-
-  //Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
-
-  //if both white, keep going forward
-  if(lQTI<QTIThreshold && rQTI<QTIThreshold){
-    onHash = false;
-    lMotor.run(100);
-    rMotor.run(100);
-  }
-
-  //if left QTI is on the line, turn left
-  else if(lQTI>QTIThreshold && rQTI<QTIThreshold){
-    onHash = false;
-    lMotor.run(-150);
-    rMotor.run(150);
-  }
-
-  //if right QTI is on the line, turn right
-  else if(lQTI<QTIThreshold && rQTI>QTIThreshold){
-    onHash = false;
-    lMotor.run(150);
-    rMotor.run(-150);
-  }
-
-  //if both QTIs are on the line, you are at a hash mark
-  else if(lQTI>QTIThreshold && rQTI>QTIThreshold){
-    //if detected hashmark for the first time, stop and detect object
-    if(!onHash){
-        onHash = true;
-        lMotor.run(0);
-        rMotor.run(0);
-
-        hasObject = false; //assume there is no object there
-        
-        /*SENSING CODE BEGINS HERE*/
-        while(RFIDSerial.available()) //flush old data
-            RFIDSerial.read();
-
-        digitalWrite(RFIDEnablePin, LOW); //enable RFID reader
-        delay(200); //give the reader some time to get data
-        while(RFIDSerial.available()){
-            if(RFIDSerial.read() == RFID_START){ //if there is valid incoming data, object has been detected
-                hasObject = true;
-                break;
-            }
-        }
-
-        digitalWrite(RFIDEnablePin, HIGH); //disable RFID reader
-        while(RFIDSerial.available()) //flush the rest of the data
-            RFIDSerial.read();
-        /*SENSING CODE ENDS HERE*/
-
-        digitalWrite(gLEDPin, hasObject); //light up the green LED if object is there
-        
-        delay (1000);
-
-        digitalWrite(gLEDPin, false);
-        
-    }
-
-    //if was on hash mark in previous cycle, keep moving until off hash mark
-    else{
-        lMotor.run(150);
+  while(true){
+      //COMMUNICATION
+      if(XBeeSerial.available()){ /*if XBee data is available and button is not pressed, start reading from serial buffer*/
+        Serial.println((char)XBeeSerial.read()); /*print received byte*/
+        digitalWrite(rLEDPin, HIGH); /*turn on receive LED*/
+        lastXBeeRec = millis(); /* update time of last received byte*/
+      }
+      
+      if(!XBeeSerial.available()&&millis()-lastXBeeRec>50) 
+        digitalWrite(rLEDPin, LOW); /*ensure LED is on for at least 50ms to ensure it visibly turns on and to give time for the next byte*/
+      
+      if(digitalRead(buttonPin)){ /*if button is pressed, start sending*/
+        digitalWrite(gLEDPin, HIGH); /*turn on send LED*/
+        XBeeSerial.print('M'); /*send a byte*/
+        continue;
+      }
+     
+     if(!digitalRead(buttonPin))
+        digitalWrite(gLEDPin,LOW); /*if the button is not pressed, turn off the send LED*/
+     
+    
+      //LINE FOLLOWING
+      //Read QTIs
+      lQTI = RCtime(lPin);
+      rQTI = RCtime(rPin);
+      //cQTI = RCtime(cPin);
+    
+      //Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
+    
+      //if both white, keep going forward
+      if(lQTI<QTIThreshold && rQTI<QTIThreshold){
+        onHash = false;
+        lMotor.run(100);
+        rMotor.run(100);
+      }
+    
+      //if left QTI is on the line, turn left
+      else if(lQTI>QTIThreshold && rQTI<QTIThreshold){
+        onHash = false;
+        lMotor.run(-150);
         rMotor.run(150);
-    }
-  }
+      }
+    
+      //if right QTI is on the line, turn right
+      else if(lQTI<QTIThreshold && rQTI>QTIThreshold){
+        onHash = false;
+        lMotor.run(150);
+        rMotor.run(-150);
+      }
+    
+      //if both QTIs are on the line, you are at a hash mark
+      else if(lQTI>QTIThreshold && rQTI>QTIThreshold){
+        //if detected hashmark for the first time, stop and detect object
+        if(!onHash){
+            onHash = true;
+            lMotor.run(0);
+            rMotor.run(0);
+    
+            hasObject = false; //assume there is no object there
+            
+            /*SENSING CODE BEGINS HERE*/
+            while(RFIDSerial.available()) //flush old data
+                RFIDSerial.read();
+            digitalWrite(RFIDEnablePin, LOW); //enable RFID reader
+            
+             for(int i=0;i<2000;i++){ //give the reader some time to get data
+                if(RFIDSerial.available()) break;
+                delay(1);
+             }
+            while(RFIDSerial.available()){
+                Serial.println("something");
+                if(RFIDSerial.read() == RFID_START){ //if there is valid incoming data, object has been detected
+                    hasObject = true;
+                    break;
+                }
+            }
+    
+            digitalWrite(RFIDEnablePin, HIGH); //disable RFID reader
+            while(RFIDSerial.available()) //flush the rest of the data
+                RFIDSerial.read();
+            /*SENSING CODE ENDS HERE*/
+    
+            digitalWrite(gLEDPin, hasObject); //light up the green LED if object is there
+            
+            delay (1000);
+    
+            digitalWrite(gLEDPin, false);
+            
+        }
+    
+        //if was on hash mark in previous cycle, keep moving until off hash mark
+        else{
+            lMotor.run(150);
+            rMotor.run(150);
+        }
+      }
   
-
+  }
 }
 
 long RCtime(int sensPin){
