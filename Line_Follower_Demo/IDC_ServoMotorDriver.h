@@ -20,6 +20,7 @@
       IDC_ServoMotorDriver(int,bool);
       void initialise();
       void run(int);
+      void disconnect();
   };
 
 #endif

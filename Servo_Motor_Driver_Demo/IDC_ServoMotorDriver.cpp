@@ -25,3 +25,7 @@ void IDC_ServoMotorDriver::run(int power){
 void IDC_ServoMotorDriver::initialise(){
 	servo->attach(pin);
 }
+
+void IDC_ServoMotorDriver::disconnect(){
+	servo->detach();
+}
