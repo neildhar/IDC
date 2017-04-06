@@ -32,7 +32,7 @@ void IDC_ScoreKeeper::update(){
 		byte state = incoming & 0b00011111;
 		bool valid = true;
 		byte id = incoming>>5;
-		
+        //Serial.println(incoming);
 		if(id<5){
 			stateBuffer[id][stateBufferIndex[id]] = state;
 			stateBufferIndex[id] = (stateBufferIndex[id]+1)%BUFFER_SIZE;
@@ -62,8 +62,28 @@ void IDC_ScoreKeeper::setState(int id, byte state){
 
 int IDC_ScoreKeeper::getScore(){
 	int score = 0;
-	score += (countOnes(states[0]&states[1])*10);
-	score += (countOnes(states[2]&states[3])*10);
-	score += (((bool)states[4])*150);
+	score += this->pairScore(1);
+	score += this->pairScore(2);
+	score += this->pairScore(3);
 	return score;
 }
+
+int IDC_ScoreKeeper::pairScore(int pair){
+    if(pair == 1)
+        return (countOnes(states[0]&states[1])*10);
+    else if(pair == 2)
+        return (countOnes(states[2]&states[3])*10);
+    else if (pair == 3)
+        return (((bool)states[4])*150);
+    return 0;
+}
+
+int IDC_ScoreKeeper::pairScore(){
+    if(myID<2)
+        return this->pairScore(1);
+    else if(myID<4)
+        return this->pairScore(2);
+    return this->pairScore(3);
+        
+}
+

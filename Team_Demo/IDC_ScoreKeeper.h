@@ -25,6 +25,8 @@
       int getScore();
       int countOnes(byte);
       void setState(int, byte); //for testing only
+      int pairScore(int);
+      int pairScore();
   };
 
 #endif
