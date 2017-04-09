@@ -84,6 +84,5 @@ int IDC_ScoreKeeper::pairScore(){
     else if(myID<4)
         return this->pairScore(2);
     return this->pairScore(3);
-        
-}
 
+}
