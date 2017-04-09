@@ -109,7 +109,7 @@ void loop() {
     
       //if both QTIs are on the line, you are at a hash mark
       else if(lQTI>QTIThreshold && rQTI>QTIThreshold){
-        //if detected hashmark for the first time, stop and detect object
+        //if detecting this hashmark for the first time, stop and detect object
         if(!onHash){
             onHash = true;
             hashCount++;
