@@ -46,7 +46,7 @@ bool onHash = false;
 bool hasObject = false;
 int hashCount = 0;
 long lastXBeeRec=0; /*time of last received XBee byte*/
-char strbuf[3];
+char strbuf[10];
 long lQTI, rQTI, cQTI;
 
 void loop() {
@@ -74,6 +74,8 @@ void loop() {
         LCDSerial.write(17); //enable backlight
       
         LCDSerial.print(itoa(ScoreKeeper.getScore(), strbuf, 10)); //print score
+        LCDSerial.print("\n");
+        LCDSerial.print(itoa(ScoreKeeper.pairScore(), strbuf, 10));
         continue; //skip line following
      }
       //LINE FOLLOWING
