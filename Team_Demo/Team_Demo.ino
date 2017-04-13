@@ -1,5 +1,4 @@
-#define lPin 10
-#define cPin 5
+#define lPin 5
 #define rPin 4
 
 #define gLEDPin 8
@@ -82,7 +81,6 @@ void loop() {
       //Read QTIs
       lQTI = RCtime(lPin);
       rQTI = RCtime(rPin);
-      //cQTI = RCtime(cPin);
     
       //Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
     
