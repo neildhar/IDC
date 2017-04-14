@@ -2,8 +2,6 @@
 #define rPin 4
 
 #define gLEDPin 8
-#define rLEDPin 9
-#define buttonPin 6
 
 #define RFIDEnablePin  7
 #define RFID_START  0x0A
@@ -25,9 +23,7 @@ IDC_ScoreKeeper ScoreKeeper(&XBeeSerial, 1); //initialise as beater 1
 
 void setup() {
   XBeeSerial.begin(9600); //initialise XBee
-  pinMode(gLEDPin, OUTPUT); /*set send LED pin mode*/
-  pinMode(rLEDPin, OUTPUT);   /*set receive LED pin mode*/
-  pinMode(buttonPin, INPUT); /* set button pin mode*/
+  pinMode(gLEDPin, OUTPUT); //set send LED pin mode
   
   Serial.begin(9600);
 
@@ -46,7 +42,7 @@ bool hasObject = false;
 int hashCount = 0;
 long lastXBeeRec=0; /*time of last received XBee byte*/
 char strbuf[10];
-long lQTI, rQTI, cQTI;
+long lQTI, rQTI;
 
 void loop() {
   hashCount = 0;
@@ -60,7 +56,7 @@ void loop() {
         delay(1000);
         hashCount++;
      }
-     else if(hashCount == 6){
+     else if(hashCount == 6){ //program has ended
         lMotor.run(0);
         rMotor.run(0);
         delay(200); //wait for robot to completely stop
@@ -82,7 +78,7 @@ void loop() {
       lQTI = RCtime(lPin);
       rQTI = RCtime(rPin);
     
-      //Serial.print(lQTI); Serial.print(" "); Serial.print(cQTI); Serial.print(" "); Serial.println(rQTI);
+      //Serial.print(lQTI); Serial.print(" "); Serial.println(rQTI);
     
       //if both white, keep going forward
       if(lQTI<QTIThreshold && rQTI<QTIThreshold){
