@@ -14,7 +14,7 @@
       Stream* XBee;
       int myID;
       byte states[5];
-      byte stateBuffer[5][5];
+      byte stateBuffer[5][BUFFER_SIZE];
       int stateBufferIndex[5];
     public:
       IDC_ScoreKeeper(Stream*, int);

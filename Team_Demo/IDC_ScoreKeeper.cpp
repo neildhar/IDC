@@ -11,10 +11,10 @@ IDC_ScoreKeeper::IDC_ScoreKeeper(Stream* _XBee,int _id){
 }
 
 void IDC_ScoreKeeper::set(int pos, bool val){
-    if(val)
-			states[myID] |= (1<<pos);
-		else
-			states[myID] &= ~(1<<pos);
+    if(val) //if object is present
+		states[myID] |= (1<<pos); //set bit at position to 1
+    else
+		states[myID] &= ~(1<<pos); //set bit at position to 0
 }
 
 byte IDC_ScoreKeeper::getState(int byteID){
@@ -23,25 +23,25 @@ byte IDC_ScoreKeeper::getState(int byteID){
 
 
 void IDC_ScoreKeeper::sendByte(){
-	XBee ->write((myID<<5)|states[myID]);
+	XBee ->write((myID<<5)|states[myID]); //send tagged state (tag is highest 3 bits)
 }
 
 void IDC_ScoreKeeper::update(){
 	while(XBee ->available()){
-		byte incoming = XBee -> read();
-		byte state = incoming & 0b00011111;
-		bool valid = true;
-		byte id = incoming>>5;
-        //Serial.println(incoming);
+		byte incoming = XBee -> read(); //read incoming byte
+		byte state = incoming & 0b00011111; //get bottom 5 bits (state) of incoming byte
+		bool valid = true; //assume data is valid
+		byte id = incoming>>5; //get id of incoming byte
+
 		if(id<5){
-			stateBuffer[id][stateBufferIndex[id]] = state;
-			stateBufferIndex[id] = (stateBufferIndex[id]+1)%BUFFER_SIZE;
+			stateBuffer[id][stateBufferIndex[id]] = state; //append latest state to buffer of states
+			stateBufferIndex[id] = (stateBufferIndex[id]+1)%BUFFER_SIZE; //update index in state buffer
 
 			for(int i=0; i<BUFFER_SIZE;i++) //check to ensure all data in buffer is the same
 				if(stateBuffer[id][i]!=stateBuffer[id][0])
 					valid = false;
 
-			if(valid)
+			if(valid) //if all data is the same (i.e. same robot has sent same state enough times to fill its buffer), update the state
 				states[id] = state;
 		}
 	}
@@ -70,12 +70,12 @@ int IDC_ScoreKeeper::getScore(){
 
 int IDC_ScoreKeeper::pairScore(int pair){
     if(pair == 1)
-        return (countOnes(states[0]&states[1])*10);
+        return (countOnes(states[0]&states[1])*10); //if beater/chaser 1
     else if(pair == 2)
-        return (countOnes(states[2]&states[3])*10);
+        return (countOnes(states[2]&states[3])*10); //if beater/chaser 2
     else if (pair == 3)
-        return (((bool)states[4])*150);
-    return 0;
+        return (((bool)states[4])*150); //if seeker
+    return 0; //if errror
 }
 
 int IDC_ScoreKeeper::pairScore(){
