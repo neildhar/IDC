@@ -29,3 +29,9 @@ void IDC_ServoMotorDriver::initialise(){
 void IDC_ServoMotorDriver::disconnect(){
 	servo->detach();
 }
+
+IDC_ServoMotorDriver::~IDC_ServoMotorDriver(){
+    this -> disconnect();
+    delete servo;
+}
+

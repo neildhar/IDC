@@ -10,7 +10,7 @@
 
   class IDC_ScoreKeeper{
     private:
-      const int BUFFER_SIZE = 5;
+      const static int BUFFER_SIZE = 5;
       Stream* XBee;
       int myID;
       byte states[5];

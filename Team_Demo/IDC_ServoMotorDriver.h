@@ -18,6 +18,7 @@
     public:
       IDC_ServoMotorDriver(int);
       IDC_ServoMotorDriver(int,bool);
+      ~IDC_ServoMotorDriver();
       void initialise();
       void run(int);
       void disconnect();

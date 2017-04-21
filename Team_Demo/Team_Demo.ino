@@ -1,5 +1,5 @@
-#define lPin 5
-#define rPin 4
+#define lQTIPin 5
+#define rQTIPin 4
 
 #define gLEDPin 8
 
@@ -42,7 +42,7 @@ bool hasObject = false;
 int hashCount = 0;
 long lastXBeeRec=0; /*time of last received XBee byte*/
 char strbuf[10];
-long lQTI, rQTI;
+bool lQTI, rQTI;
 
 void loop() {
   hashCount = 0;
@@ -75,34 +75,34 @@ void loop() {
      }
       //LINE FOLLOWING
       //Read QTIs
-      lQTI = RCtime(lPin);
-      rQTI = RCtime(rPin);
+      lQTI = RCtime(lQTIPin)>QTIThreshold;
+      rQTI = RCtime(rQTIPin)>QTIThreshold;
     
       //Serial.print(lQTI); Serial.print(" "); Serial.println(rQTI);
     
       //if both white, keep going forward
-      if(lQTI<QTIThreshold && rQTI<QTIThreshold){
+      if(!lQTI && !rQTI){
         onHash = false;
         lMotor.run(100);
         rMotor.run(100);
       }
     
       //if left QTI is on the line, turn left
-      else if(lQTI>QTIThreshold && rQTI<QTIThreshold){
+      else if(lQTI && !rQTI){
         onHash = false;
         lMotor.run(-150);
         rMotor.run(150);
       }
     
       //if right QTI is on the line, turn right
-      else if(lQTI<QTIThreshold && rQTI>QTIThreshold){
+      else if(!lQTI && rQTI){
         onHash = false;
         lMotor.run(150);
         rMotor.run(-150);
       }
     
       //if both QTIs are on the line, you are at a hash mark
-      else if(lQTI>QTIThreshold && rQTI>QTIThreshold){
+      else if(lQTI && rQTI){
         //if detecting this hashmark for the first time, stop and detect object
         if(!onHash){
             onHash = true;
